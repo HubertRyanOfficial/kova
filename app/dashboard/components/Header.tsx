@@ -25,7 +25,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white py-4 px-8 flex flex-row items-center justify-between">
+    <header className="bg-white h-[6vh] px-8 flex flex-row items-center justify-between">
       <Image alt="Kova" src="/kova.svg" width={70} height={70} />
       <div className="flex items-center">
         <DropdownMenu>

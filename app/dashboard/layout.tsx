@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <body className="min-h-[100vh] w-full">
       <Header />
-      {children}
+      <main className="h-[94vh] px-8">{children}</main>
     </body>
   );
 }
