@@ -9,7 +9,7 @@ export default function CreateButton() {
   const router = useRouter();
 
   return (
-    <Button onClick={() => router.replace("/dashboard/create")}>
+    <Button onClick={() => router.push("/dashboard/create")}>
       <PlusIcon className="mr-2" /> Create Article
     </Button>
   );
