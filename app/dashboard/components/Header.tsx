@@ -26,7 +26,13 @@ export default function Header() {
 
   return (
     <header className="bg-white h-[6vh] px-8 flex flex-row items-center justify-between">
-      <Image alt="Kova" src="/kova.svg" width={70} height={70} />
+      <Image
+        onClick={() => router.push("/dashboard")}
+        alt="Kova"
+        src="/kova.svg"
+        width={70}
+        height={70}
+      />
       <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -38,7 +44,9 @@ export default function Header() {
           <DropdownMenuContent className="mr-8 mt-4">
             <DropdownMenuLabel>Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Create a new project</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/dashboard/create")}>
+              Create a new content
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleSignOut} className="text-red-500">
               Sign Out
             </DropdownMenuItem>
