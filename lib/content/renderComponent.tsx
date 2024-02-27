@@ -56,7 +56,6 @@ export function renderComponent(
         onInput={(e: any) =>
           e.target?.innerText && handleFunction(String(e.target?.innerText))
         }
-        dangerouslySetInnerHTML={{ __html: component.content }}
       />
     );
   }
