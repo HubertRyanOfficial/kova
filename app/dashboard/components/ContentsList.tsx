@@ -5,6 +5,7 @@ import {
   CaretSortIcon,
   ChevronDownIcon,
   DotsHorizontalIcon,
+  PlusIcon,
 } from "@radix-ui/react-icons";
 import {
   ColumnDef,
@@ -40,6 +41,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Content, useUser } from "@/contexts/UserContext";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 export const columns: ColumnDef<Content>[] = [
   {
@@ -85,8 +88,10 @@ export const columns: ColumnDef<Content>[] = [
       );
     },
     cell: ({ row }) => {
-      const date = new Date(Number(row.getValue("timestamp")));
-      return <div className="lowercase">{date.toUTCString()}</div>;
+      const date = dayjs(Number(row.getValue("timestamp"))).format(
+        "HH:MM  -  DD/MM/YYYY"
+      );
+      return <div className="lowercase">{date}</div>;
     },
   },
   {
@@ -124,6 +129,7 @@ export const columns: ColumnDef<Content>[] = [
 ];
 
 export default function ContentsList() {
+  const router = useRouter();
   const { contents: data } = useUser();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -155,7 +161,7 @@ export default function ContentsList() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Filter title..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -164,32 +170,40 @@ export default function ContentsList() {
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+          <Button
+            className="mr-2"
+            onClick={() => router.push("/dashboard/create")}
+          >
+            Create a new content <PlusIcon className="ml-2 h-4 w-4" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

@@ -12,7 +12,7 @@ import MainLoader from "@/components/MainLoader";
 import { auth, db } from "@/lib/firebase-config";
 import { usePathname, useRouter } from "next/navigation";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { collection, doc, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, orderBy, query } from "firebase/firestore";
 
 interface UserContextProps {
   children: React.ReactNode;
@@ -49,7 +49,10 @@ export function UserProvider({ children }: UserContextProps) {
       if (user) {
         const uid = user.uid;
 
-        const contentsRef = collection(db, "contents");
+        const contentsRef = query(
+          collection(db, "contents"),
+          orderBy("timestamp", "desc")
+        );
         const contents = await getDocs(contentsRef);
 
         const contentsData: Content[] = contents.docs.map((doc) => {
@@ -66,6 +69,7 @@ export function UserProvider({ children }: UserContextProps) {
         setLoading(false);
       }
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }

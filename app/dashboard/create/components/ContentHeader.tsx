@@ -28,7 +28,7 @@ export default function ContentHeader() {
     <section className="flex flex-col">
       <h1 className="text-base font-regular text-gray-400">New content</h1>
       <div className="flex items-center justify-between mt-4">
-        <Input
+        <input
           value={title}
           onChange={(e) => handleTitle(e.target.value)}
           placeholder="Main title"
@@ -37,7 +37,7 @@ export default function ContentHeader() {
         />
         <div className="flex items-center">
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button variant="outline" className="mx-4">
                 <LayersIcon className="mr-4" />
                 New component
