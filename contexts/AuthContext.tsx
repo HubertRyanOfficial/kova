@@ -25,8 +25,6 @@ export function AuthProvider({ children }: AuthContextProps) {
 
   const handleUser = useCallback(async () => {
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
-
       if (user && location == "/") {
         router.push("/dashboard");
       }

@@ -9,13 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { FilePlusIcon, TextIcon } from "@radix-ui/react-icons";
+import { FilePlusIcon } from "@radix-ui/react-icons";
 import { typeOfContents } from "@/lib/content";
 import { useContent } from "@/contexts/ContentContext";
 
 export default function ContentHeader() {
-  const { hasComponentsAvailable, title, handleTitle, handleAddNewComponent } =
-    useContent();
+  const {
+    hasComponentsAvailable,
+    title,
+    handleTitle,
+    handleAddNewComponent,
+    publishing,
+    handlePublish,
+  } = useContent();
 
   return (
     <header className="flex flex-col">
@@ -45,8 +51,12 @@ export default function ContentHeader() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button disabled={!hasComponentsAvailable}>
-            <FilePlusIcon className="mr-4" /> Publish
+          <Button
+            onClick={() => handlePublish()}
+            disabled={!hasComponentsAvailable || publishing}
+          >
+            <FilePlusIcon className="mr-4" />{" "}
+            {!publishing ? "Publish" : "Publishing"}
           </Button>
         </div>
       </div>

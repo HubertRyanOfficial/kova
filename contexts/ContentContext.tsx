@@ -12,11 +12,13 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 
 import MainLoader from "@/components/MainLoader";
-import { auth, storage } from "@/lib/firebase-config";
-import { usePathname, useRouter } from "next/navigation";
+import { auth, db, storage } from "@/lib/firebase-config";
+import { useRouter } from "next/navigation";
 import { User, onAuthStateChanged } from "firebase/auth";
 import type { Component, ComponentTypes } from "@/lib/content/types";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { compilerComponent } from "@/lib/content/compilerComponent";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 
 interface ContentContextProps {
   children: React.ReactNode;
@@ -26,6 +28,7 @@ interface ContentContextType extends ContetContextHandles {
   title: string;
   components: Component[];
   hasComponentsAvailable: boolean;
+  publishing: boolean;
 }
 
 interface ContetContextHandles {
@@ -36,13 +39,16 @@ interface ContetContextHandles {
   ) => void;
   handleAddNewComponent: (type: ComponentTypes) => void;
   handleRemoveComponent: (index: number) => void;
+  handlePublish: () => Promise<void>;
 }
 
 const ContentContext = createContext<ContentContextType>({} as any);
 
 export function ContentProvider({ children }: ContentContextProps) {
   const { toast } = useToast();
+  const router = useRouter();
 
+  const [contentId, setContentId] = useState("");
   const [title, setTitle] = useState("");
   const [components, setComponents] = useState<Component[]>([
     {
@@ -50,6 +56,19 @@ export function ContentProvider({ children }: ContentContextProps) {
       content: "",
     },
   ]);
+  const [publishing, setPublishing] = useState(false);
+
+  useEffect(() => {
+    getNewId();
+  }, []);
+
+  const getNewId = useCallback(async () => {
+    const newContentRef = collection(db, "contents");
+    const newId = doc(newContentRef);
+    if (!contentId && newId && newId.id) {
+      setContentId(newId.id);
+    }
+  }, [contentId]);
 
   const handleTitle = useCallback((value: string) => setTitle(value), []);
   const handleComponentContent = useCallback(
@@ -100,7 +119,10 @@ export function ContentProvider({ children }: ContentContextProps) {
     async (file: File, index: number) => {
       const type = file.type == "image/jpeg" ? "jpg" : "png";
       const timestamp = new Date().valueOf();
-      const storageRef = ref(storage, `images/${timestamp}.${type}`);
+      const storageRef = ref(
+        storage,
+        `contents/${contentId}/${timestamp}.${type}`
+      );
       const fileUplaoded = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
 
@@ -116,8 +138,30 @@ export function ContentProvider({ children }: ContentContextProps) {
         description: `${timestamp}.${type}`,
       });
     },
-    [components]
+    [components, contentId]
   );
+
+  const handlePublish = async () => {
+    try {
+      setPublishing(true);
+      const timestamp = new Date().valueOf();
+      const fullContentToUpload = compilerComponent(components);
+
+      const contentRef = doc(collection(db, "contents"), contentId);
+      await setDoc(contentRef, {
+        title,
+        full_content: JSON.stringify(fullContentToUpload),
+        timestamp,
+      });
+      setTitle("");
+      setContentId("");
+      setComponents([]);
+      router.back();
+    } catch (error) {
+    } finally {
+      setPublishing(false);
+    }
+  };
 
   const hasComponentsAvailable = useMemo(
     () =>
@@ -134,10 +178,12 @@ export function ContentProvider({ children }: ContentContextProps) {
         components,
         title,
         hasComponentsAvailable,
+        publishing,
         handleTitle,
         handleComponentContent,
         handleAddNewComponent,
         handleRemoveComponent,
+        handlePublish,
       }}
     >
       {children}
