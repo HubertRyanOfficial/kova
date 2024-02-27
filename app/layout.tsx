@@ -1,6 +1,5 @@
 import { AuthProvider } from "@/contexts/AuthContext";
 import "../styles/globals.css";
-import Header from "./dashboard/components/Header";
 
 export default function RootLayout({
   children,

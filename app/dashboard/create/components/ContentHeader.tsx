@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { FilePlusIcon } from "@radix-ui/react-icons";
+import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
 import { typeOfContents } from "@/lib/content";
 import { useContent } from "@/contexts/ContentContext";
+import { Label } from "@/components/ui/label";
 
 export default function ContentHeader() {
   const {
@@ -24,19 +25,21 @@ export default function ContentHeader() {
   } = useContent();
 
   return (
-    <header className="flex flex-col">
-      <h1 className="text-3xl font-semibold">New content</h1>
+    <section className="flex flex-col">
+      <h1 className="text-base font-regular text-gray-400">New content</h1>
       <div className="flex items-center justify-between mt-4">
         <Input
           value={title}
           onChange={(e) => handleTitle(e.target.value)}
           placeholder="Main title"
-          className="w-[300px]"
+          className="w-[300px] font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-black"
+          autoFocus
         />
         <div className="flex items-center">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Button variant="outline" className="mx-4">
+                <LayersIcon className="mr-4" />
                 New component
               </Button>
             </DropdownMenuTrigger>
@@ -60,6 +63,6 @@ export default function ContentHeader() {
           </Button>
         </div>
       </div>
-    </header>
+    </section>
   );
 }

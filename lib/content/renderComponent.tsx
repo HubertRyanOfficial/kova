@@ -1,17 +1,22 @@
-import { Textarea } from "@/components/ui/textarea";
-import { Component } from "./types";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { ImageIcon, UploadIcon } from "@radix-ui/react-icons";
-import Image from "next/image";
+
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import Loader from "@/components/Loader";
+import { Label } from "@/components/ui/label";
+import { Component } from "./types";
+
+import cn from "classnames";
 
 export function renderComponent(
   component: Component,
   handleFunction: (value: string | File | null) => void
 ) {
+  let resultComponent = null;
+
   if (component.type == "image") {
-    return (
-      <div className="flex items-center justify-between w-full mt-4">
+    resultComponent = (
+      <div className="flex items-center justify-between w-full">
         {!component.content ? (
           <Input
             type="file"
@@ -28,30 +33,40 @@ export function renderComponent(
           <img src={component.content} width={50} height={50} />
         )}
         {component.loading && (
-          <span className="ml-4 text-xs">Uploading...</span>
+          <span className="ml-4 text-xs">
+            <Loader color="#000000" size={24} />
+          </span>
         )}
       </div>
     );
-  }
-
-  if (component.type == "title") {
-    return (
+  } else if (component.type == "title") {
+    resultComponent = (
       <Input
         value={component.content}
         onChange={(e) => handleFunction(e.target.value)}
-        className="mt-6"
+        className="text-base"
         placeholder="Title"
+      />
+    );
+  } else {
+    resultComponent = (
+      <div
+        className="text-base w-full border-[1px] rounded-md border-gray-500 p-4"
+        contentEditable
+        onInput={(e) => handleFunction(String(e.target?.innerText))}
+        dangerouslySetInnerHTML={{ __html: component.content }}
       />
     );
   }
 
   return (
-    <Textarea
-      value={component.content}
-      onChange={(e) => handleFunction(e.target.value)}
-      rows={6}
-      placeholder="New paragraphy"
-      className="mt-4"
-    />
+    <div
+      className={cn("flex flex-col w-full mt-4", {
+        "mt-8": component.type == "title",
+      })}
+    >
+      <Label className="text-gray-400 text-xs">Type: {component.type}</Label>
+      <div className="mt-4">{resultComponent}</div>
+    </div>
   );
 }
