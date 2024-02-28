@@ -160,7 +160,7 @@ export default function ContentsList() {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white px-4 rounded-xl h-[500px] shadow-md">
       <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Filter title..."
