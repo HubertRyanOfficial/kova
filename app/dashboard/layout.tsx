@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <body className="min-h-[100vh] w-full bg-white">
+    <body className="min-h-[100vh] w-full bg-gray-50">
       <Header />
       <UserProvider>
         <ContentProvider>
