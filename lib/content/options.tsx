@@ -1,7 +1,7 @@
 import { HeadingIcon, ImageIcon, TextIcon } from "@radix-ui/react-icons";
 import { RenderComponet } from "./types";
 
-export const typeOfContents: RenderComponet[] = [
+export const componentOptions: RenderComponet[] = [
   {
     type: "title",
     title: "Title",
@@ -10,11 +10,11 @@ export const typeOfContents: RenderComponet[] = [
   {
     type: "text",
     title: "Text",
-    icon: <ImageIcon className="mr-4" />,
+    icon: <TextIcon className="mr-4" />,
   },
   {
     type: "image",
     title: "Image",
-    icon: <TextIcon className="mr-4" />,
+    icon: <ImageIcon className="mr-4" />,
   },
 ];

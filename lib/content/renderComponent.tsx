@@ -50,7 +50,7 @@ export function renderComponent(
     );
   } else {
     resultComponent = (
-      <div
+      <p
         className="text-base w-full border-[1px] rounded-md border-gray-500 p-4"
         contentEditable
         onInput={(e: any) =>
@@ -62,7 +62,7 @@ export function renderComponent(
 
   return (
     <div
-      className={cn("flex flex-col w-full mt-4", {
+      className={cn("flex flex-col w-full mt-4 ", {
         "mt-8": component.type == "title",
       })}
     >

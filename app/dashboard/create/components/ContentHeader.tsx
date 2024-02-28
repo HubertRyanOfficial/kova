@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
-import { typeOfContents } from "@/lib/content";
+import { componentOptions } from "@/lib/content/options";
 import { useContent } from "@/contexts/ContentContext";
 import { Label } from "@/components/ui/label";
 
@@ -26,13 +26,13 @@ export default function ContentHeader() {
 
   return (
     <section className="flex flex-col">
-      <h1 className="text-base font-regular text-gray-400">New content</h1>
+      <h1 className="text-base font-regular text-gray-400">Create content</h1>
       <div className="flex items-center justify-between mt-4">
         <input
           value={title}
           onChange={(e) => handleTitle(e.target.value)}
           placeholder="Main title"
-          className="w-[300px] font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-black"
+          className="w-[400px] font-semibold text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
           autoFocus
         />
         <div className="flex items-center">
@@ -44,7 +44,7 @@ export default function ContentHeader() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {typeOfContents.map((item) => (
+              {componentOptions.map((item) => (
                 <DropdownMenuItem
                   onClick={() => handleAddNewComponent(item.type)}
                 >
