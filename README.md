@@ -1,4 +1,6 @@
-# TO DO (URGENT)
+# Kova (CMS)
+
+## TO DO (URGENT)
 
 - [ ] Create render function to the client with full_content string
 - [ ] Create to use tags and making it able to be re-used in others contents
@@ -6,7 +8,7 @@
 - [ ] Auto draft
 - [ ] Status such as: In Draft & Published
 
-# TO DO (NEXT)
+## TO DO (NEXT)
 
 - [ ] Viewer count to firestore database
 - [ ] Internationalization with Translation Extension
