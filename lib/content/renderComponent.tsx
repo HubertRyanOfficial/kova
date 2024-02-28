@@ -41,11 +41,11 @@ export function renderComponent(
     );
   } else if (component.type == "title") {
     resultComponent = (
-      <Input
+      <input
         value={component.content}
         onChange={(e) => handleFunction(e.target.value)}
-        className="text-base"
         placeholder="Title"
+        className="w-full font-medium text-3xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
       />
     );
   } else {
@@ -60,14 +60,5 @@ export function renderComponent(
     );
   }
 
-  return (
-    <div
-      className={cn("flex flex-col w-full mt-4 ", {
-        "mt-8": component.type == "title",
-      })}
-    >
-      <Label className="text-gray-400 text-xs">Type: {component.type}</Label>
-      <div className="mt-4">{resultComponent}</div>
-    </div>
-  );
+  return <div className="mt-4">{resultComponent}</div>;
 }

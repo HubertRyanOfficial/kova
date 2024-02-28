@@ -15,54 +15,17 @@ import { useContent } from "@/contexts/ContentContext";
 import { Label } from "@/components/ui/label";
 
 export default function ContentHeader() {
-  const {
-    hasComponentsAvailable,
-    title,
-    handleTitle,
-    handleAddNewComponent,
-    publishing,
-    handlePublish,
-  } = useContent();
+  const { title, handleTitle } = useContent();
 
   return (
     <section className="flex flex-col">
-      <h1 className="text-base font-regular text-gray-400">Create content</h1>
-      <div className="flex items-center justify-between mt-4">
-        <input
-          value={title}
-          onChange={(e) => handleTitle(e.target.value)}
-          placeholder="Main title"
-          className="w-[400px] font-semibold text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
-          autoFocus
-        />
-        <div className="flex items-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="mx-4">
-                <LayersIcon className="mr-4" />
-                New component
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {componentOptions.map((item) => (
-                <DropdownMenuItem
-                  onClick={() => handleAddNewComponent(item.type)}
-                >
-                  {item.icon}
-                  {item.title}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button
-            onClick={() => handlePublish()}
-            disabled={!hasComponentsAvailable || publishing}
-          >
-            <FilePlusIcon className="mr-4" />{" "}
-            {!publishing ? "Publish" : "Publishing"}
-          </Button>
-        </div>
-      </div>
+      <input
+        value={title}
+        onChange={(e) => handleTitle(e.target.value)}
+        placeholder="Main title"
+        className="w-full font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
+        autoFocus
+      />
     </section>
   );
 }
