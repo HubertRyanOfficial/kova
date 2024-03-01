@@ -28,9 +28,13 @@ interface UserContextProps {
   children: React.ReactNode;
 }
 
-interface UserContextType {
+interface UserContextType extends UserContextHandles {
   loading: boolean;
   contents: Content[];
+}
+
+interface UserContextHandles {
+  refreshContents: () => void;
 }
 
 export interface Content {
@@ -59,12 +63,8 @@ export function UserProvider({ children }: UserContextProps) {
 
       const contentIndex = allContents.findIndex((item) => item.id === id);
 
-      console.log(contentIndex);
-
       allContents[contentIndex].loading = true;
       setContents(allContents);
-
-      console.log(allContents);
 
       const contentRef = doc(collection(db, "contents"), id);
       await deleteDoc(contentRef);
@@ -128,7 +128,9 @@ export function UserProvider({ children }: UserContextProps) {
   }, [loading]);
 
   return (
-    <UserContext.Provider value={{ loading, contents }}>
+    <UserContext.Provider
+      value={{ loading, contents, refreshContents: handleContents }}
+    >
       {children}
     </UserContext.Provider>
   );

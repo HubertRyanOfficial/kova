@@ -19,6 +19,7 @@ import type { Component, ComponentTypes } from "@/lib/content/types";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { compilerComponent } from "@/lib/content/compilerComponent";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { useUser } from "./UserContext";
 
 interface ContentContextProps {
   children: React.ReactNode;
@@ -46,6 +47,7 @@ const ContentContext = createContext<ContentContextType>({} as any);
 
 export function ContentProvider({ children }: ContentContextProps) {
   const { toast } = useToast();
+  const { refreshContents } = useUser();
   const router = useRouter();
 
   const [contentId, setContentId] = useState("");
@@ -156,6 +158,7 @@ export function ContentProvider({ children }: ContentContextProps) {
       setTitle("");
       setContentId("");
       setComponents([]);
+      refreshContents();
       router.back();
     } catch (error) {
     } finally {

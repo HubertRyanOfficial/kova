@@ -24,7 +24,9 @@ export function AuthProvider({ children }: AuthContextProps) {
   }, [auth, children]);
 
   const handleUser = useCallback(async () => {
-    onAuthStateChanged(auth, (user) => {
+    let unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log(location);
+
       if (user && location == "/") {
         router.push("/dashboard");
       }
@@ -37,7 +39,8 @@ export function AuthProvider({ children }: AuthContextProps) {
 
       setLoading(false);
     });
-  }, []);
+    return unsubscribe;
+  }, [location]);
 
   return (
     <AuthContext.Provider value={null}>
