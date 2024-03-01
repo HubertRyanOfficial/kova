@@ -12,7 +12,17 @@ import MainLoader from "@/components/MainLoader";
 import { auth, db } from "@/lib/firebase-config";
 import { usePathname, useRouter } from "next/navigation";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { collection, doc, getDocs, orderBy, query } from "firebase/firestore";
+import {
+  QueryDocumentSnapshot,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface UserContextProps {
   children: React.ReactNode;
@@ -28,11 +38,14 @@ export interface Content {
   title: string;
   timestamp: number;
   full_content: string;
+  onDelete: () => Promise<void>;
+  loading: boolean;
 }
 
 const UserContext = createContext<UserContextType>({} as any);
 
 export function UserProvider({ children }: UserContextProps) {
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [contents, setContents] = useState<Content[]>([]);
 
@@ -40,8 +53,44 @@ export function UserProvider({ children }: UserContextProps) {
     handleContents();
   }, []);
 
+  const handleDeleteContent = useCallback(
+    async (id: string, previousContent: Content[]) => {
+      let allContents = [...previousContent];
+
+      const contentIndex = allContents.findIndex((item) => item.id === id);
+
+      console.log(contentIndex);
+
+      allContents[contentIndex].loading = true;
+      setContents(allContents);
+
+      console.log(allContents);
+
+      const contentRef = doc(collection(db, "contents"), id);
+      await deleteDoc(contentRef);
+
+      setContents(allContents.filter((item) => item.id != id));
+    },
+    []
+  );
+
+  const formatContent = (docs: any[]) => {
+    return docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        full_content: doc.data().full_content,
+        timestamp: data.timestamp,
+        title: data.title,
+        loading: false,
+        onDelete: () => handleDeleteContent(doc.id, formatContent(docs)),
+      };
+    });
+  };
+
   const handleContents = useCallback(async () => {
     if (contents.length > 0) return;
+    if (!loading) setLoading(true);
 
     try {
       const user = auth.currentUser;
@@ -53,27 +102,30 @@ export function UserProvider({ children }: UserContextProps) {
           collection(db, "contents"),
           orderBy("timestamp", "desc")
         );
-        const contents = await getDocs(contentsRef);
+        const allContents = await getDocs(contentsRef);
 
-        const contentsData: Content[] = contents.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            full_content: data.full_content,
-            timestamp: data.timestamp,
-            title: data.title,
-          };
-        });
+        const contentsData: Content[] = formatContent(allContents.docs);
 
         setContents(contentsData);
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Error",
+        description: "Error searching all contents",
+        action: (
+          <ToastAction
+            altText="Refresh contents"
+            onClick={() => handleContents()}
+          >
+            Refresh
+          </ToastAction>
+        ),
+      });
     } finally {
       setLoading(false);
     }
-  }, [contents]);
+  }, [loading]);
 
   return (
     <UserContext.Provider value={{ loading, contents }}>

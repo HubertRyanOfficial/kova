@@ -38,7 +38,9 @@ export default function Header() {
           <DropdownMenuTrigger>
             <Avatar className="hover:scale-105 transition-all cursor-pointer">
               <AvatarImage src={auth.currentUser?.photoURL || undefined} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                {auth.currentUser?.displayName?.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="mr-8 mt-4">
