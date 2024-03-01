@@ -157,7 +157,12 @@ export function ContentProvider({ children }: ContentContextProps) {
       });
       setTitle("");
       setContentId("");
-      setComponents([]);
+      setComponents([
+        {
+          type: "text",
+          content: "",
+        },
+      ]);
       refreshContents();
       router.back();
     } catch (error) {

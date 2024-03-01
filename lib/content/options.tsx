@@ -18,3 +18,18 @@ export const componentOptions: RenderComponet[] = [
     icon: <ImageIcon className="mr-4" />,
   },
 ];
+
+export const getTypeOption = (type: string) => {
+  const typeSelected = componentOptions.find((item) => item.type == type);
+
+  if (!typeSelected)
+    return {
+      title: "",
+      icon: <div />,
+    };
+
+  return {
+    title: typeSelected.title,
+    icon: typeSelected.icon,
+  };
+};

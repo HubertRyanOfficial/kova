@@ -23,7 +23,7 @@ export default function ContentHeader() {
         value={title}
         onChange={(e) => handleTitle(e.target.value)}
         placeholder="Main title"
-        className="w-full font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
+        className="w-full font-medium text-3xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
         autoFocus
       />
     </section>

@@ -45,7 +45,7 @@ export function renderComponent(
         value={component.content}
         onChange={(e) => handleFunction(e.target.value)}
         placeholder="Title"
-        className="w-full font-medium text-3xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
+        className="w-full font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
       />
     );
   } else {
