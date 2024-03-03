@@ -155,6 +155,7 @@ export function ContentProvider({ children }: ContentContextProps) {
         full_content: JSON.stringify(fullContentToUpload),
         timestamp,
       });
+      refreshContents();
       setTitle("");
       setContentId("");
       setComponents([
@@ -163,7 +164,6 @@ export function ContentProvider({ children }: ContentContextProps) {
           content: "",
         },
       ]);
-      refreshContents();
       router.back();
     } catch (error) {
     } finally {

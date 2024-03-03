@@ -25,7 +25,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-white h-[6vh] px-8 flex flex-row items-center justify-between">
+    <header className="bg-gray-50 h-[6vh] px-8 flex flex-row items-center justify-between">
       <Image
         onClick={() => router.push("/dashboard")}
         alt="Kova"

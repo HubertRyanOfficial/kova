@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, memo, useCallback, useEffect, useState } from "react";
 
 import MainLoader from "@/components/MainLoader";
 import { auth } from "@/lib/firebase-config";
 import { usePathname, useRouter } from "next/navigation";
-import { User, onAuthStateChanged } from "firebase/auth";
+import { Unsubscribe, User, onAuthStateChanged } from "firebase/auth";
 
 interface AuthContextProps {
   children: React.ReactNode;
@@ -13,20 +13,20 @@ interface AuthContextProps {
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }: AuthContextProps) {
+function AuthProvider({ children }: AuthContextProps) {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const location = usePathname();
 
   useEffect(() => {
-    handleUser();
-  }, [auth, children]);
+    const unsubscribe = handleUser();
+    return () => unsubscribe();
+  }, []);
 
-  const handleUser = useCallback(async () => {
-    let unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(location);
-
+  const handleUser = useCallback((): Unsubscribe => {
+    setLoading(true);
+    return onAuthStateChanged(auth, (user) => {
       if (user && location == "/") {
         router.push("/dashboard");
       }
@@ -35,11 +35,8 @@ export function AuthProvider({ children }: AuthContextProps) {
         router.push("/");
       }
 
-      // * Make sure that is getting user data from firestore by UID
-
       setLoading(false);
     });
-    return unsubscribe;
   }, [location]);
 
   return (
@@ -48,3 +45,5 @@ export function AuthProvider({ children }: AuthContextProps) {
     </AuthContext.Provider>
   );
 }
+
+export default memo(AuthProvider);
