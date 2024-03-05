@@ -147,6 +147,7 @@ export function ContentProvider({ children }: ContentContextProps) {
     try {
       setPublishing(true);
       const timestamp = new Date().valueOf();
+
       const fullContentToUpload = compilerComponent(components);
 
       const contentRef = doc(collection(db, "contents"), contentId);

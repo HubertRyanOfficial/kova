@@ -18,7 +18,7 @@ export function compilerComponent(components: Component[]) {
       } else if (item.type == "text") {
         result.push(`<p>${formatRichText(item.content)}</p>`);
       } else {
-        result.push(`<img src={${item.content}}>`);
+        result.push(`<img src=${item.content}>`);
       }
     });
 

@@ -50,12 +50,12 @@ export function renderComponent(
     );
   } else {
     resultComponent = (
-      <p
+      <div
         className="text-base w-full border-[1px] rounded-md border-gray-500 p-4"
         contentEditable
-        onInput={(e: any) =>
-          e.target?.innerText && handleFunction(String(e.target?.innerText))
-        }
+        onInput={(e: any) => {
+          e.target?.innerText && handleFunction(String(e.target?.innerHTML));
+        }}
       />
     );
   }

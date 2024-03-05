@@ -259,6 +259,8 @@ export const columns: ColumnDef<Content>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const navigate = useRouter();
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -268,6 +270,14 @@ export const columns: ColumnDef<Content>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() =>
+                navigate.push(`/dashboard/view/${row.original.id}`)
+              }
+            >
+              Preview
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => row.original.onDelete()}
