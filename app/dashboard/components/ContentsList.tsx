@@ -76,6 +76,11 @@ export default function ContentsList() {
     },
   });
 
+  const isAllSelected = table.getIsAllPageRowsSelected();
+  const filteredSelectedRows = table.getFilteredSelectedRowModel();
+
+  console.log(filteredSelectedRows);
+
   return (
     <div className="w-full bg-white px-4 rounded-xl h-[500px] shadow-md">
       <div className="flex justify-between items-center py-4">
@@ -88,38 +93,47 @@ export default function ContentsList() {
           className="max-w-sm"
         />
         <div>
-          <Button
-            className="mr-2"
-            onClick={() => router.push("/dashboard/create")}
-          >
-            Create a new content <PlusIcon className="ml-2 h-4 w-4" />
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+          {(isAllSelected || filteredSelectedRows.rows.length >= 2) && (
+            <Button className="mr-2" variant="outline" onClick={() => {}}>
+              Delete all
+            </Button>
+          )}
+          {!isAllSelected && filteredSelectedRows.rows.length < 2 && (
+            <>
+              <Button
+                className="mr-2"
+                onClick={() => router.push("/dashboard/create")}
+              >
+                Create a new content <PlusIcon className="ml-2 h-4 w-4" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          )}
         </div>
       </div>
       <div className="rounded-md border">
@@ -258,17 +272,29 @@ export const columns: ColumnDef<Content>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const navigate = useRouter();
 
+      const isAllSelected = table.getIsAllPageRowsSelected();
+      const isSomeSelected = row.getIsSelected() && !isAllSelected;
+      const filteredSelectedRow = table.getFilteredSelectedRowModel();
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          {!isSomeSelected && !isAllSelected ? (
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+          ) : (
+            isSomeSelected &&
+            filteredSelectedRow.rows.length < 2 && (
+              <Button variant="outline" onClick={() => row.original.onDelete()}>
+                Delete
+              </Button>
+            )
+          )}
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() =>
