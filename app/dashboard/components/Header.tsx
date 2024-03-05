@@ -15,6 +15,7 @@ import { auth } from "@/lib/firebase-config";
 import { useCallback } from "react";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/Logo";
 
 export default function Header() {
   const router = useRouter();
@@ -26,13 +27,19 @@ export default function Header() {
 
   return (
     <header className="bg-gray-50 h-[6vh] px-8 flex flex-row items-center justify-between">
-      <Image
+      <div
+        className="flex items-center"
         onClick={() => router.push("/dashboard")}
-        alt="Kova"
-        src="/kova.svg"
-        width={70}
-        height={70}
-      />
+      >
+        <Logo width={30} height={30} hover />
+        <Image
+          alt="Kova"
+          src="/kova.svg"
+          width={70}
+          height={70}
+          className="ml-4"
+        />
+      </div>
       <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger>

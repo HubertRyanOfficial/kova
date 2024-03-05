@@ -1,6 +1,6 @@
 "use client";
 export default function Loader({
-  color = "#AD49A2",
+  color = "#25283D",
   size = 32,
 }: {
   color?: string;
