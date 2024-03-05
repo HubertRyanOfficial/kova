@@ -20,8 +20,8 @@ export default function Logo({
       animate={{ rotate: 0 }}
       whileHover={{ rotate: hover ? 180 : 0 }}
       transition={{
-        duration: 0.3,
-        bounce: true,
+        type: "spring",
+        stiffness: 80,
       }}
     >
       <Image src="/logo.svg" width={width} height={height} alt="Kova brand" />
