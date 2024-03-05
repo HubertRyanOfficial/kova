@@ -1,8 +1,17 @@
-p {
+.content p {
+  margin-top: 20px;
+}
+
+.content h2 {
+  font-size: 24px;
+  font-weight: 400;
   margin: 20px 0px;
 }
 
-h2 {
-  font-size: 28px;
-  font-weight: 600;
+.content img {
+  width: 200px;
+  height: 200px;
+  border-radius: 20px;
+  object-fit: cover;
+  margin: 20px 0px;
 }
