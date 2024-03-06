@@ -1,6 +1,7 @@
-import { RenderContent } from "@/lib/content/renderContent";
+// import { RenderContent } from "@/lib/content/renderContent";
 import { db } from "@/lib/firebase-config";
 import { collection, doc, getDoc } from "firebase/firestore";
+import { RenderContent } from "@kova/render";
 
 import "@/lib/content/renderStyles.css";
 
