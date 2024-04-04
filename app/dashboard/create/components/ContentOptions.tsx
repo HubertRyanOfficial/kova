@@ -29,8 +29,11 @@ export default function ContentOptions() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {componentOptions.map((item) => (
-            <DropdownMenuItem onClick={() => handleAddNewComponent(item.type)}>
+          {componentOptions.map((item, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => handleAddNewComponent(item.type)}
+            >
               {item.icon}
               {item.title}
             </DropdownMenuItem>

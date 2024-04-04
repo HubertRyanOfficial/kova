@@ -18,12 +18,12 @@ export default function ContentHeader() {
   const { title, handleTitle } = useContent();
 
   return (
-    <section className="flex flex-col">
+    <section className="flex flex-col bg-white py-4 px-6 rounded-md shadow-sm border-[1px] border-gray-200">
       <input
         value={title}
         onChange={(e) => handleTitle(e.target.value)}
         placeholder="Main title"
-        className="w-full font-medium text-3xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
+        className="w-full font-medium text-2xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
         autoFocus
       />
     </section>

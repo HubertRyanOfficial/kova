@@ -45,13 +45,13 @@ export function renderComponent(
         value={component.content}
         onChange={(e) => handleFunction(e.target.value)}
         placeholder="Title"
-        className="w-full font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
+        className="w-full font-medium text-2xl border-0 outline-none pl-0 text-black placeholder:text-gray-400 bg-transparent"
       />
     );
   } else {
     resultComponent = (
       <div
-        className="text-base w-full border-[1px] rounded-md border-gray-500 p-4"
+        className="text-base w-full h-auto bg-white border-[1px] rounded-md border-gray-500 p-4"
         contentEditable
         onInput={(e: any) => {
           e.target?.innerText && handleFunction(String(e.target?.innerHTML));
@@ -60,5 +60,13 @@ export function renderComponent(
     );
   }
 
-  return <div className="mt-4">{resultComponent}</div>;
+  return (
+    <div
+      className={cn("mt-4 overflow-auto", {
+        "h-[500px]": component.type == "text",
+      })}
+    >
+      {resultComponent}
+    </div>
+  );
 }

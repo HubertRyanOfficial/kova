@@ -23,9 +23,11 @@ export default function Content() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={cn("flex flex-col w-full mt-2", {
-              "mt-8": item.type == "title",
+            className={cn("flex flex-col w-full", {
+              "mt-4": index > 0,
+              "mt-2": index > 0 && components[index - 1].type == "title",
             })}
+            key={index}
           >
             <div className="flex items-center justify-between">
               <Label className="text-gray-400 text-xs flex items-center">
