@@ -1,31 +1,56 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
-import { componentOptions } from "@/lib/content/options";
-import { useContent } from "@/contexts/ContentContext";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useContent } from "@/contexts/ContentContext";
 
-export default function ContentHeader() {
+export default function ContentInformation() {
   const { title, handleTitle } = useContent();
 
   return (
     <section className="flex flex-col bg-white py-4 px-6 rounded-md shadow-sm border-[1px] border-gray-200">
-      <input
-        value={title}
-        onChange={(e) => handleTitle(e.target.value)}
-        placeholder="Main title"
-        className="w-full font-medium text-2xl border-0 outline-none pl-0 text-black placeholder:text-gray-400"
-        autoFocus
-      />
+      <div>
+        <Label className="font-medium">SEO Title</Label>
+        <Input placeholder="Main title" className="mt-2" />
+      </div>
+      <div className="mt-2">
+        <Label className="font-medium">Description</Label>
+        <Input placeholder="Description" className="mt-2" />
+      </div>
+
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1">
+          <AccordionTrigger>
+            Advanced options to OG, Twitter and Cards tag.
+          </AccordionTrigger>
+          <AccordionContent>
+            <div>
+              <Label className="font-medium">Open Graph - Title</Label>
+              <Input placeholder="Main title" className="mt-2" />
+            </div>
+            <div className="mt-2">
+              <Label className="font-medium">Open Graph - Description</Label>
+              <Input placeholder="Description" className="mt-2" />
+            </div>
+            <Separator className="my-4" />
+            <div>
+              <Label className="font-medium">Twitter - Title</Label>
+              <Input placeholder="Main title" className="mt-2" />
+            </div>
+            <div className="mt-2">
+              <Label className="font-medium">Twitter - Description</Label>
+              <Input placeholder="Description" className="mt-2" />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </section>
   );
 }
