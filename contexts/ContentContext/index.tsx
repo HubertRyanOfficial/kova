@@ -45,6 +45,8 @@ export function ContentProvider({ children }: ContentContextProps) {
   ]);
   const [publishing, setPublishing] = useState(false);
 
+  console.log(informations);
+
   useEffect(() => {
     getNewId();
   }, []);
