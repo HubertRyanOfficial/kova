@@ -1,9 +1,5 @@
-import { ImageIcon, UploadIcon } from "@radix-ui/react-icons";
-
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import Loader from "@/components/Loader";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Component } from "./types";
 
 import cn from "classnames";
@@ -60,13 +56,5 @@ export function renderComponent(
     );
   }
 
-  return (
-    <div
-      className={cn("mt-4 overflow-auto", {
-        "h-[500px]": component.type == "text",
-      })}
-    >
-      {resultComponent}
-    </div>
-  );
+  return <div className={cn("mt-4 overflow-auto")}>{resultComponent}</div>;
 }

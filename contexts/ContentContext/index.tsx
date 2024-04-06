@@ -11,37 +11,19 @@ import {
 
 import { useToast } from "@/components/ui/use-toast";
 
-import MainLoader from "@/components/MainLoader";
 import { auth, db, storage } from "@/lib/firebase-config";
 import { useRouter } from "next/navigation";
-import { User, onAuthStateChanged } from "firebase/auth";
 import type { Component, ComponentTypes } from "@/lib/content/types";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { compilerComponent } from "@/lib/content/compilerComponent";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import { useUser } from "./UserContext";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { useUser } from "../UserContext";
 
-interface ContentContextProps {
-  children: React.ReactNode;
-}
-
-interface ContentContextType extends ContetContextHandles {
-  title: string;
-  components: Component[];
-  hasComponentsAvailable: boolean;
-  publishing: boolean;
-}
-
-interface ContetContextHandles {
-  handleTitle: (value: string) => void;
-  handleComponentContent: (
-    content: string | File | null,
-    index: number
-  ) => void;
-  handleAddNewComponent: (type: ComponentTypes) => void;
-  handleRemoveComponent: (index: number) => void;
-  handlePublish: () => Promise<void>;
-}
+import {
+  ContentContextProps,
+  ContentContextType,
+  ContentInformations,
+} from "./types";
 
 const ContentContext = createContext<ContentContextType>({} as any);
 
@@ -51,7 +33,10 @@ export function ContentProvider({ children }: ContentContextProps) {
   const router = useRouter();
 
   const [contentId, setContentId] = useState("");
-  const [title, setTitle] = useState("");
+  const [informations, setInformations] = useState<ContentInformations>({
+    title: "",
+    description: "",
+  });
   const [components, setComponents] = useState<Component[]>([
     {
       type: "text",
@@ -72,7 +57,15 @@ export function ContentProvider({ children }: ContentContextProps) {
     }
   }, [contentId]);
 
-  const handleTitle = useCallback((value: string) => setTitle(value), []);
+  const handleInformations = useCallback(
+    (key: keyof ContentInformations, value: string) =>
+      setInformations((prevValue) => ({
+        ...prevValue,
+        [key]: value,
+      })),
+    []
+  );
+
   const handleComponentContent = useCallback(
     (content: string | File | null, index: number) => {
       let allComponents = [...components];
@@ -152,12 +145,15 @@ export function ContentProvider({ children }: ContentContextProps) {
 
       const contentRef = doc(collection(db, "contents"), contentId);
       await setDoc(contentRef, {
-        title,
+        ...informations,
         full_content: JSON.stringify(fullContentToUpload),
         timestamp,
       });
       refreshContents();
-      setTitle("");
+      setInformations({
+        title: "",
+        description: "",
+      });
       setContentId("");
       setComponents([
         {
@@ -174,21 +170,22 @@ export function ContentProvider({ children }: ContentContextProps) {
 
   const hasComponentsAvailable = useMemo(
     () =>
-      title &&
+      informations.title &&
+      informations.description &&
       components.find((item) => !!item.content || item.content.length > 0)
         ? true
         : false,
-    [components, title]
+    [components, informations]
   );
 
   return (
     <ContentContext.Provider
       value={{
         components,
-        title,
+        informations,
         hasComponentsAvailable,
         publishing,
-        handleTitle,
+        handleInformations,
         handleComponentContent,
         handleAddNewComponent,
         handleRemoveComponent,

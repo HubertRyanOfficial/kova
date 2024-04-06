@@ -1,7 +1,7 @@
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Content from "./components/Content";
 import ContentOptions from "./components/ContentOptions";
-import ContentInformation from "./components/ContentHeader";
+import ContentInformation from "./components/ContentInformation";
 
 export default function Page() {
   return (
