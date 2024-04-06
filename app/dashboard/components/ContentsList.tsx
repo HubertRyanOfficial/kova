@@ -79,8 +79,6 @@ export default function ContentsList() {
   const isAllSelected = table.getIsAllPageRowsSelected();
   const filteredSelectedRows = table.getFilteredSelectedRowModel();
 
-  console.log(filteredSelectedRows);
-
   return (
     <div className="w-full bg-white px-4 rounded-xl h-[500px] shadow-md">
       <div className="flex justify-between items-center py-4">
