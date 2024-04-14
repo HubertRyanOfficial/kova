@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { ContainerIcon, PackagePlus } from "lucide-react";
+import { ContainerIcon, PackagePlus, FileBoxIcon } from "lucide-react";
 import cn from "classnames";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,11 @@ const OPTIONS = [
     icon: <ContainerIcon className="w-4 h-4 mr-4" />,
     name: "Contents",
     path: "/dashboard",
+  },
+  {
+    icon: <FileBoxIcon className="w-4 h-4 mr-4" />,
+    name: "Drafts",
+    path: "/dashboard/drafts",
   },
 ];
 

@@ -22,16 +22,9 @@ export default function ContentOptions() {
 
   return (
     <div className="flex flex-row justify-between items-center w-full mt-4">
-      <TabsList className="h-[45px] rounded-lg">
-        <TabsTrigger className="h-[35px] w-[130px] rounded-md" value="content">
-          Content
-        </TabsTrigger>
-        <TabsTrigger
-          className="h-[35px]  w-[130px] rounded-md"
-          value="informations"
-        >
-          Informations
-        </TabsTrigger>
+      <TabsList>
+        <TabsTrigger value="content">Content</TabsTrigger>
+        <TabsTrigger value="informations">Informations</TabsTrigger>
       </TabsList>
       <div>
         <DropdownMenu>
