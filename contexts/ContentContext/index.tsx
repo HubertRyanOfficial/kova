@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -32,7 +33,7 @@ export function ContentProvider({ children }: ContentContextProps) {
   const { refreshContents } = useUser();
   const router = useRouter();
 
-  const [contentId, setContentId] = useState("");
+  const contentId = useRef<string>("");
   const [informations, setInformations] = useState<ContentInformations>({
     title: "",
     description: "",
@@ -52,10 +53,10 @@ export function ContentProvider({ children }: ContentContextProps) {
   const getNewId = useCallback(async () => {
     const newContentRef = collection(db, "contents");
     const newId = doc(newContentRef);
-    if (!contentId && newId && newId.id) {
-      setContentId(newId.id);
+    if (!contentId.current && newId && newId.id) {
+      contentId.current = newId.id;
     }
-  }, [contentId]);
+  }, [contentId.current]);
 
   const handleInformations = useCallback(
     (key: keyof ContentInformations, value: string) =>
@@ -116,7 +117,7 @@ export function ContentProvider({ children }: ContentContextProps) {
       const timestamp = new Date().valueOf();
       const storageRef = ref(
         storage,
-        `contents/${contentId}/${timestamp}.${type}`
+        `contents/${contentId.current}/${timestamp}.${type}`
       );
       const fileUplaoded = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
@@ -133,7 +134,7 @@ export function ContentProvider({ children }: ContentContextProps) {
         description: `${timestamp}.${type}`,
       });
     },
-    [components, contentId]
+    [components, contentId.current]
   );
 
   const handlePublish = async () => {
@@ -143,7 +144,7 @@ export function ContentProvider({ children }: ContentContextProps) {
 
       const fullContentToUpload = compilerComponent(components);
 
-      const contentRef = doc(collection(db, "contents"), contentId);
+      const contentRef = doc(collection(db, "contents"), contentId.current);
       await setDoc(contentRef, {
         ...informations,
         full_content: JSON.stringify(fullContentToUpload),
@@ -154,7 +155,9 @@ export function ContentProvider({ children }: ContentContextProps) {
         title: "",
         description: "",
       });
-      setContentId("");
+
+      contentId.current = "";
+
       setComponents([
         {
           type: "text",
@@ -163,6 +166,9 @@ export function ContentProvider({ children }: ContentContextProps) {
       ]);
       router.back();
     } catch (error) {
+      toast({
+        title: "Publishing error",
+      });
     } finally {
       setPublishing(false);
     }

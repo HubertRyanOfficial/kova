@@ -107,7 +107,6 @@ export function UserProvider({ children }: UserContextProps) {
         const contentsData: Content[] = formatContent(allContents.docs);
 
         setContents(contentsData);
-        setLoading(false);
       }
     } catch (error) {
       toast({
@@ -125,7 +124,7 @@ export function UserProvider({ children }: UserContextProps) {
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, [loading, contents]);
 
   return (
     <UserContext.Provider
