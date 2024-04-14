@@ -1,5 +1,7 @@
-import Header from "./components/Header";
 import { Metadata } from "next";
+
+import Header from "./_components/Header";
+
 import { Toaster } from "@/components/ui/toaster";
 import { ContentProvider } from "@/contexts/ContentContext";
 import { UserProvider } from "@/contexts/UserContext";

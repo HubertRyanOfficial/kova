@@ -1,5 +1,4 @@
-import ContentsWrapper from "./components/ContentsWrapper";
-import CreateButton from "./components/CreateButton";
+import ContentsWrapper from "./_components/ContentsWrapper";
 
 export default function Page() {
   return (
