@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, memo, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import MainLoader from "@/components/MainLoader";
 import { auth } from "@/lib/firebase-config";
@@ -11,7 +18,11 @@ interface AuthContextProps {
   children: React.ReactNode;
 }
 
-const AuthContext = createContext(null);
+interface AuthContextValues {
+  handleLoading: (value: boolean) => void;
+}
+
+const AuthContext = createContext({} as AuthContextValues);
 
 function AuthProvider({ children }: AuthContextProps) {
   const [loading, setLoading] = useState(true);
@@ -25,7 +36,7 @@ function AuthProvider({ children }: AuthContextProps) {
   }, []);
 
   const handleUser = useCallback((): Unsubscribe => {
-    setLoading(true);
+    if (!loading) setLoading(true);
     return onAuthStateChanged(auth, (user) => {
       if (user && location == "/") {
         router.push("/dashboard");
@@ -37,13 +48,17 @@ function AuthProvider({ children }: AuthContextProps) {
 
       setLoading(false);
     });
-  }, [location]);
+  }, [location, loading]);
+
+  const handleLoading = (value: boolean) => setLoading(value);
 
   return (
-    <AuthContext.Provider value={null}>
+    <AuthContext.Provider value={{ handleLoading }}>
       {!loading ? children : <MainLoader />}
     </AuthContext.Provider>
   );
 }
+
+export const useAuth = () => useContext(AuthContext);
 
 export default memo(AuthProvider);

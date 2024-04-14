@@ -3,18 +3,25 @@
 import { auth } from "@/lib/firebase-config";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "./ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function GoogleButton() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const handleGoogleAuth = useCallback(async () => {
-    const googleProvier = new GoogleAuthProvider();
-    googleProvier.addScope("https://www.googleapis.com/auth/userinfo.email");
+    try {
+      const googleProvier = new GoogleAuthProvider();
+      googleProvier.addScope("https://www.googleapis.com/auth/userinfo.email");
 
-    const response = await signInWithPopup(auth, googleProvier);
-
-    router.push("/dashboard");
+      setLoading(true);
+      await signInWithPopup(auth, googleProvier);
+      router.push("/dashboard");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   return (
@@ -23,6 +30,7 @@ export default function GoogleButton() {
         type="button"
         variant="outline"
         onClick={() => handleGoogleAuth()}
+        disabled={loading}
       >
         <svg
           className="mr-2 -ml-1 w-4 h-4"

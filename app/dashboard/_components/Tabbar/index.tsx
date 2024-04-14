@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { ContainerIcon, SquarePlus } from "lucide-react";
+import { ContainerIcon, PackagePlus } from "lucide-react";
 import cn from "classnames";
 
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ export default function TabBar() {
         variant={"ghost"}
         className=""
       >
-        <SquarePlus className="w-4 h-4 mr-4" /> Create new content
+        <PackagePlus className="w-4 h-4 mr-4" /> Create new content
       </Button>
       <div className="border-[1px] bg-gray-300 border-dashed my-4" />
       <div>
