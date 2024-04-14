@@ -21,8 +21,8 @@ export default function ContentOptions() {
   } = useContent();
 
   return (
-    <div className="flex flex-row justify-between items-center w-full mt-8">
-      <TabsList className="h-[50px] rounded-xl">
+    <div className="flex flex-row justify-between items-center w-full mt-4">
+      <TabsList className="h-[45px] rounded-lg">
         <TabsTrigger className="h-[35px] w-[130px] rounded-md" value="content">
           Content
         </TabsTrigger>

@@ -15,11 +15,9 @@ export default async function Page({
   if (!content) return <span>loading</span>;
 
   return (
-    <div className="h-full max-w-[1100px] m-auto flex flex-col justify-center items-center">
-      <div className="w-full bg-white px-4 rounded-xl h-[700px] shadow-md overflow-y-auto">
-        <h1 className="text-4xl font-semibold mt-6">{content.title}</h1>
-        <RenderContent content={content.full_content} className="content" />
-      </div>
+    <div className="w-full h-full p-4 overflow-y-auto">
+      <h1 className="text-4xl font-semibold">{content.title}</h1>
+      <RenderContent content={content.full_content} className="content" />
     </div>
   );
 }

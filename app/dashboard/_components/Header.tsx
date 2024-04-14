@@ -26,7 +26,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-gray-50 h-[6vh] px-8 flex flex-row items-center justify-between">
+    <header className="h-[6vh] px-8 flex flex-row items-center justify-between">
       <div
         className="flex items-center"
         onClick={() => router.push("/dashboard")}
@@ -35,15 +35,15 @@ export default function Header() {
         <Image
           alt="Kova"
           src="/kova.svg"
-          width={70}
-          height={70}
+          width={60}
+          height={60}
           className="ml-4"
         />
       </div>
       <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar className="hover:scale-105 transition-all cursor-pointer">
+            <Avatar className="w-[35px] h-[35px] hover:scale-105 transition-all cursor-pointer">
               <AvatarImage src={auth.currentUser?.photoURL || undefined} />
               <AvatarFallback>
                 {auth.currentUser?.displayName?.slice(0, 2).toUpperCase()}

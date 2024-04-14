@@ -80,7 +80,7 @@ export default function ContentsList() {
   const filteredSelectedRows = table.getFilteredSelectedRowModel();
 
   return (
-    <div className="w-full bg-white px-4 rounded-xl h-[500px] shadow-md">
+    <div className="w-full px-4 rounded-xl h-full">
       <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Filter title..."
