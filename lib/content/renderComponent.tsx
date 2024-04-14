@@ -47,7 +47,7 @@ export function renderComponent(
   } else {
     resultComponent = (
       <div
-        className="text-base w-full h-auto bg-white border-[1px] rounded-md border-gray-500 p-4"
+        className="text-base w-full h-auto bg-white border-[1px] rounded-md border-gray-500 p-4 outline-none"
         contentEditable
         onInput={(e: any) => {
           e.target?.innerText && handleFunction(String(e.target?.innerHTML));
