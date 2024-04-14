@@ -15,9 +15,9 @@ export default function ContentInformation() {
   const { informations, handleInformations } = useContent();
 
   return (
-    <section className="flex flex-col bg-white py-4 px-6 rounded-md shadow-sm border-[1px] border-gray-200">
+    <section className="flex flex-col bg-white py-4 px-4 ml-4 rounded-md shadow-sm border-[1px] border-gray-200">
       <div>
-        <Label className="font-medium">SEO Title</Label>
+        <Label className="font-medium">Title</Label>
         <Input
           placeholder="Main title"
           className="mt-2"

@@ -12,7 +12,7 @@ export function renderComponent(
 
   if (component.type == "image") {
     resultComponent = (
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full overflow-hidden">
         {!component.content ? (
           <Input
             type="file"
@@ -26,7 +26,7 @@ export function renderComponent(
             disabled={component.loading}
           />
         ) : (
-          <img src={component.content} width={50} height={50} />
+          <img src={component.content} className="w-full rounded-xl" />
         )}
         {component.loading && (
           <span className="ml-4 text-xs">

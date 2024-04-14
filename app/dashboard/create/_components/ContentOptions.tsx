@@ -6,11 +6,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
+
 import { useContent } from "@/contexts/ContentContext";
+import { Button } from "@/components/ui/button";
+
+import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
+import { FileIcon } from "lucide-react";
+
 import { componentOptions } from "@/lib/content/options";
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ContentOptions() {
   const {
@@ -22,10 +25,15 @@ export default function ContentOptions() {
 
   return (
     <div className="flex flex-row justify-between items-center w-full mt-4">
-      <TabsList>
-        <TabsTrigger value="content">Content</TabsTrigger>
-        <TabsTrigger value="informations">Informations</TabsTrigger>
-      </TabsList>
+      <div className="flex flex-row items-center">
+        <FileIcon className="w-6 h-6" />
+        <div className="ml-4">
+          <h1 className="text-lg">Create content</h1>
+          <p className="text-gray-400 text-sm">
+            Create a new content and add seo information.
+          </p>
+        </div>
+      </div>
       <div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
