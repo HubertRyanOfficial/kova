@@ -89,14 +89,14 @@ export function UserProvider({ children }: UserContextProps) {
   };
 
   const handleContents = useCallback(async () => {
-    if (contents.length > 0) return;
     if (!loading) setLoading(true);
 
     try {
       const user = auth.currentUser;
 
       if (user) {
-        const uid = user.uid;
+        // TODO: Soon with every connected users, for now just global content collection in database
+        // const uid = user.uid;
 
         const contentsRef = query(
           collection(db, "contents"),
