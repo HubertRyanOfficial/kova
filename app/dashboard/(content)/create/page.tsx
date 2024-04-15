@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+
 import Content from "@/components/Content/Content";
 import ContentOptions from "@/components/Content/ContentOptions";
 import ContentInformation from "@/components/Content/ContentInformation";
@@ -8,7 +12,15 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
+import { useContent } from "@/contexts/ContentContext";
+
 export default function Page() {
+  const { handleResetContentBuilder } = useContent();
+
+  useEffect(() => {
+    handleResetContentBuilder();
+  }, []);
+
   return (
     <div className="px-4 w-full h-[96%]">
       <ContentOptions

@@ -2,22 +2,24 @@
 
 import { useEffect, useState } from "react";
 
+import { useRouter } from "next/navigation";
+import { collection, doc, getDoc } from "firebase/firestore";
+
 import Content from "@/components/Content/Content";
 import ContentOptions from "@/components/Content/ContentOptions";
 import ContentInformation from "@/components/Content/ContentInformation";
-
+import { useToast } from "@/components/ui/use-toast";
+import Loader from "@/components/Loader";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { collection, doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase-config";
+
 import { useContent } from "@/contexts/ContentContext";
 import { Content as ContentType } from "@/contexts/ContentContext/types";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 
+import { db } from "@/lib/firebase-config";
 interface EditPageProps {
   params: {
     id: string;
@@ -39,7 +41,7 @@ export default function Page({ params: { id } }: EditPageProps) {
         const contentData = contentRef.data() as ContentType;
 
         if (contentData) {
-          handleEditContent(contentData);
+          handleEditContent(contentData, id);
         }
         setLoading(false);
       } catch (error) {
@@ -54,7 +56,13 @@ export default function Page({ params: { id } }: EditPageProps) {
     getContent();
   }, [id]);
 
-  if (loading) return <span>Loading</span>;
+  if (loading) {
+    return (
+      <div className="h-full flex justify-center items-center">
+        <Loader color="#000000" />
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 w-full h-[96%]">

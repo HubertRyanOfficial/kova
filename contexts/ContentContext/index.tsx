@@ -61,7 +61,7 @@ export function ContentProvider({ children }: ContentContextProps) {
 
   useEffect(() => {
     const handleInnersValue = () => {
-      if (isEditing) {
+      if (isEditing && components.length > 0) {
         components.map((comp, index) => {
           if (
             comp.type == "text" &&
@@ -166,6 +166,23 @@ export function ContentProvider({ children }: ContentContextProps) {
     [components, contentId.current]
   );
 
+  const handleResetContentBuilder = useCallback(() => {
+    setInformations({
+      title: "",
+      description: "",
+    });
+
+    contentId.current = "";
+    setComponents([
+      {
+        ref: createRef<any>(),
+        type: "text",
+        content: "",
+      },
+    ]);
+    setIsEditing(false);
+  }, []);
+
   const handlePublish = async () => {
     try {
       setPublishing(true);
@@ -174,26 +191,25 @@ export function ContentProvider({ children }: ContentContextProps) {
       const fullContentToUpload = compilerComponent(components);
 
       const contentRef = doc(collection(db, "contents"), contentId.current);
-      await setDoc(contentRef, {
-        ...informations,
-        full_content: JSON.stringify(fullContentToUpload),
-        timestamp,
-      });
+      if (!isEditing) {
+        await setDoc(contentRef, {
+          ...informations,
+          full_content: JSON.stringify(fullContentToUpload),
+          timestamp,
+        });
+      } else {
+        await setDoc(
+          contentRef,
+          {
+            ...informations,
+            full_content: JSON.stringify(fullContentToUpload),
+            last_change: timestamp,
+          },
+          { merge: true }
+        );
+      }
       refreshContents();
-      setInformations({
-        title: "",
-        description: "",
-      });
-
-      contentId.current = "";
-
-      setComponents([
-        {
-          ref: createRef<any>(),
-          type: "text",
-          content: "",
-        },
-      ]);
+      handleResetContentBuilder();
       router.back();
     } catch (error) {
       toast({
@@ -204,7 +220,7 @@ export function ContentProvider({ children }: ContentContextProps) {
     }
   };
 
-  const handleEditContent = (data: Content) => {
+  const handleEditContent = (data: Content, id: string) => {
     setIsEditing(true);
 
     const allComponentes = reverseToComponents(data.full_content);
@@ -218,6 +234,10 @@ export function ContentProvider({ children }: ContentContextProps) {
       twitter_title: data.twitter_title || "",
       twitter_description: data.twitter_description || "",
     });
+
+    if (contentId.current != id) {
+      contentId.current = id;
+    }
   };
 
   const hasComponentsAvailable = useMemo(
@@ -237,12 +257,14 @@ export function ContentProvider({ children }: ContentContextProps) {
         informations,
         hasComponentsAvailable,
         publishing,
+        isEditing,
         handleInformations,
         handleComponentContent,
         handleAddNewComponent,
         handleRemoveComponent,
         handlePublish,
         handleEditContent,
+        handleResetContentBuilder,
       }}
     >
       {children}

@@ -9,6 +9,7 @@ export interface ContentContextType extends ContentContextHandles {
   components: Component[];
   hasComponentsAvailable: boolean;
   publishing: boolean;
+  isEditing: boolean;
 }
 
 export interface ContentContextHandles {
@@ -20,7 +21,8 @@ export interface ContentContextHandles {
   handleAddNewComponent: (type: ComponentTypes) => void;
   handleRemoveComponent: (index: number) => void;
   handlePublish: () => Promise<void>;
-  handleEditContent: (data: Content) => void;
+  handleEditContent: (data: Content, id: string) => void;
+  handleResetContentBuilder: () => void;
 }
 
 export interface ContentInformations {
@@ -35,4 +37,5 @@ export interface ContentInformations {
 export interface Content extends ContentInformations {
   full_content: string;
   timestamp: number;
+  last_change?: number;
 }

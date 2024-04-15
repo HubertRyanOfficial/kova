@@ -11,7 +11,7 @@ import { useContent } from "@/contexts/ContentContext";
 import { Button } from "@/components/ui/button";
 
 import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
-import { FileIcon } from "lucide-react";
+import { FileIcon, CheckIcon } from "lucide-react";
 
 import { componentOptions } from "@/lib/content/options";
 
@@ -29,6 +29,7 @@ export default function ContentOptions({
     handleAddNewComponent,
     publishing,
     handlePublish,
+    isEditing,
   } = useContent();
 
   return (
@@ -40,11 +41,11 @@ export default function ContentOptions({
           <p className="text-gray-400 text-sm">{description}</p>
         </div>
       </div>
-      <div>
+      <div className="flex flex-row items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="mx-4">
-              <LayersIcon className="mr-4" />
+              <LayersIcon className="mr-4 w-5 h-5" />
               New component
             </Button>
           </DropdownMenuTrigger>
@@ -64,8 +65,18 @@ export default function ContentOptions({
           onClick={() => handlePublish()}
           disabled={!hasComponentsAvailable || publishing}
         >
-          <FilePlusIcon className="mr-4" />{" "}
-          {!publishing ? "Publish" : "Publishing"}
+          {!isEditing ? (
+            <FilePlusIcon className="mr-4" />
+          ) : (
+            <CheckIcon className="mr-4 w-3.5 h-3.5" />
+          )}{" "}
+          {!publishing
+            ? !isEditing
+              ? "Publish"
+              : "Save changes"
+            : !isEditing
+            ? "Publishing"
+            : "Saving"}
         </Button>
       </div>
     </div>
