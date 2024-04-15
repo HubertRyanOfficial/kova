@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  createRef,
   useCallback,
   useContext,
   useEffect,
@@ -10,17 +11,22 @@ import {
   useState,
 } from "react";
 
-import { useToast } from "@/components/ui/use-toast";
-
 import { auth, db, storage } from "@/lib/firebase-config";
 import { useRouter } from "next/navigation";
-import type { Component, ComponentTypes } from "@/lib/content/types";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { compilerComponent } from "@/lib/content/compilerComponent";
 import { collection, doc, setDoc } from "firebase/firestore";
-import { useUser } from "../UserContext";
 
 import {
+  compilerComponent,
+  reverseToComponents,
+} from "@/lib/content/compilerComponent";
+
+import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "../UserContext";
+import type { Component, ComponentTypes } from "@/lib/content/types";
+
+import {
+  Content,
   ContentContextProps,
   ContentContextType,
   ContentInformations,
@@ -34,12 +40,15 @@ export function ContentProvider({ children }: ContentContextProps) {
   const router = useRouter();
 
   const contentId = useRef<string>("");
+
+  const [isEditing, setIsEditing] = useState(false);
   const [informations, setInformations] = useState<ContentInformations>({
     title: "",
     description: "",
   });
   const [components, setComponents] = useState<Component[]>([
     {
+      ref: createRef<any>(),
       type: "text",
       content: "",
     },
@@ -47,8 +56,27 @@ export function ContentProvider({ children }: ContentContextProps) {
   const [publishing, setPublishing] = useState(false);
 
   useEffect(() => {
-    getNewId();
-  }, []);
+    if (!isEditing) getNewId();
+  }, [isEditing]);
+
+  useEffect(() => {
+    const handleInnersValue = () => {
+      if (isEditing && components.length > 0) {
+        components.map((comp, index) => {
+          if (
+            comp.type == "text" &&
+            comp.ref.current &&
+            comp.ref.current.innerHTML == "" &&
+            comp.content != ""
+          ) {
+            comp.ref.current.innerHTML = comp.content;
+          }
+        });
+      }
+    };
+
+    handleInnersValue();
+  }, [isEditing, components]);
 
   const getNewId = useCallback(async () => {
     const newContentRef = collection(db, "contents");
@@ -91,6 +119,7 @@ export function ContentProvider({ children }: ContentContextProps) {
   const handleAddNewComponent = useCallback(
     (type: ComponentTypes) => {
       let newComponent = {
+        ref: createRef<any>(),
         type,
         content: "",
         loading: false,
@@ -137,6 +166,23 @@ export function ContentProvider({ children }: ContentContextProps) {
     [components, contentId.current]
   );
 
+  const handleResetContentBuilder = useCallback(() => {
+    setInformations({
+      title: "",
+      description: "",
+    });
+
+    contentId.current = "";
+    setComponents([
+      {
+        ref: createRef<any>(),
+        type: "text",
+        content: "",
+      },
+    ]);
+    setIsEditing(false);
+  }, []);
+
   const handlePublish = async () => {
     try {
       setPublishing(true);
@@ -145,25 +191,25 @@ export function ContentProvider({ children }: ContentContextProps) {
       const fullContentToUpload = compilerComponent(components);
 
       const contentRef = doc(collection(db, "contents"), contentId.current);
-      await setDoc(contentRef, {
-        ...informations,
-        full_content: JSON.stringify(fullContentToUpload),
-        timestamp,
-      });
+      if (!isEditing) {
+        await setDoc(contentRef, {
+          ...informations,
+          full_content: JSON.stringify(fullContentToUpload),
+          timestamp,
+        });
+      } else {
+        await setDoc(
+          contentRef,
+          {
+            ...informations,
+            full_content: JSON.stringify(fullContentToUpload),
+            last_change: timestamp,
+          },
+          { merge: true }
+        );
+      }
       refreshContents();
-      setInformations({
-        title: "",
-        description: "",
-      });
-
-      contentId.current = "";
-
-      setComponents([
-        {
-          type: "text",
-          content: "",
-        },
-      ]);
+      handleResetContentBuilder();
       router.back();
     } catch (error) {
       toast({
@@ -171,6 +217,26 @@ export function ContentProvider({ children }: ContentContextProps) {
       });
     } finally {
       setPublishing(false);
+    }
+  };
+
+  const handleEditContent = (data: Content, id: string) => {
+    setIsEditing(true);
+
+    const allComponentes = reverseToComponents(data.full_content);
+    setComponents(allComponentes);
+
+    setInformations({
+      title: data.title || "",
+      description: data.description || "",
+      og_title: data.og_title || "",
+      og_description: data.og_description || "",
+      twitter_title: data.twitter_title || "",
+      twitter_description: data.twitter_description || "",
+    });
+
+    if (contentId.current != id) {
+      contentId.current = id;
     }
   };
 
@@ -191,11 +257,14 @@ export function ContentProvider({ children }: ContentContextProps) {
         informations,
         hasComponentsAvailable,
         publishing,
+        isEditing,
         handleInformations,
         handleComponentContent,
         handleAddNewComponent,
         handleRemoveComponent,
         handlePublish,
+        handleEditContent,
+        handleResetContentBuilder,
       }}
     >
       {children}

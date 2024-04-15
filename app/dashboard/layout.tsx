@@ -24,7 +24,7 @@ export default function RootLayout({
         <ContentProvider>
           <main className="h-[94vh] flex flex-row">
             <TabBar />
-            <div className="w-full bg-white mx-2 mb-2 rounded-xl shadow-lg">
+            <div className="w-full bg-white mx-2 mb-2 rounded-xl shadow-lg border-[1px] border-gray-100">
               {children}
             </div>
           </main>

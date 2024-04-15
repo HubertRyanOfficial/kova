@@ -1,4 +1,7 @@
+import type { LegacyRef, Ref } from "react";
+
 export interface Component {
+  ref: any;
   type: ComponentTypes;
   content: string;
   loading?: boolean;

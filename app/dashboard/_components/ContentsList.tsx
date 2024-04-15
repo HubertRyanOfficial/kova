@@ -296,13 +296,19 @@ export const columns: ColumnDef<Content>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() =>
+                navigate.push(`/dashboard/edit/${row.original.id}`)
+              }
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
                 navigate.push(`/dashboard/view/${row.original.id}`)
               }
             >
               Preview
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => row.original.onDelete()}
               className="text-red-500"
