@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Component } from "../../lib/content/types";
 
 import cn from "classnames";
+import { createRef } from "react";
 
 function RenderComponent({
   component,
@@ -18,7 +19,10 @@ function RenderComponent({
   switch (component.type) {
     case "image":
       resultComponent = (
-        <div className="flex items-center justify-between w-full overflow-hidden">
+        <div
+          ref={component.ref}
+          className="flex items-center justify-between w-full overflow-hidden"
+        >
           {!component.content ? (
             <Input
               type="file"
@@ -45,6 +49,7 @@ function RenderComponent({
     case "title":
       resultComponent = (
         <input
+          ref={component.ref}
           value={component.content}
           onChange={(e) => handleFunction(e.target.value)}
           placeholder="Title"
@@ -55,6 +60,7 @@ function RenderComponent({
     default:
       resultComponent = (
         <div
+          ref={component.ref}
           className="text-base w-full h-auto bg-white border-[1px] rounded-md border-gray-200 p-4 outline-none"
           contentEditable
           onInput={(e: any) => {
@@ -62,6 +68,7 @@ function RenderComponent({
           }}
         />
       );
+
       break;
   }
 

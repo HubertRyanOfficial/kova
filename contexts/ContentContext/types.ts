@@ -20,6 +20,7 @@ export interface ContentContextHandles {
   handleAddNewComponent: (type: ComponentTypes) => void;
   handleRemoveComponent: (index: number) => void;
   handlePublish: () => Promise<void>;
+  handleEditContent: (data: Content) => void;
 }
 
 export interface ContentInformations {
@@ -29,4 +30,9 @@ export interface ContentInformations {
   og_description?: string;
   twitter_title?: string;
   twitter_description?: string;
+}
+
+export interface Content extends ContentInformations {
+  full_content: string;
+  timestamp: number;
 }

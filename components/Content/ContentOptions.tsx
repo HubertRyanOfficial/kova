@@ -15,7 +15,15 @@ import { FileIcon } from "lucide-react";
 
 import { componentOptions } from "@/lib/content/options";
 
-export default function ContentOptions() {
+interface ContentOptionsProps {
+  title: string;
+  description: string;
+}
+
+export default function ContentOptions({
+  title,
+  description,
+}: ContentOptionsProps) {
   const {
     hasComponentsAvailable,
     handleAddNewComponent,
@@ -28,10 +36,8 @@ export default function ContentOptions() {
       <div className="flex flex-row items-center">
         <FileIcon className="w-6 h-6" />
         <div className="ml-4">
-          <h1 className="text-lg">Create content</h1>
-          <p className="text-gray-400 text-sm">
-            Create a new content and add seo information.
-          </p>
+          <h1 className="text-lg">{title}</h1>
+          <p className="text-gray-400 text-sm">{description}</p>
         </div>
       </div>
       <div>

@@ -1,5 +1,5 @@
 import Content from "@/components/Content/Content";
-import ContentOptions from "./_components/ContentOptions";
+import ContentOptions from "@/components/Content/ContentOptions";
 import ContentInformation from "@/components/Content/ContentInformation";
 
 import {
@@ -11,7 +11,10 @@ import {
 export default function Page() {
   return (
     <div className="px-4 w-full h-[96%]">
-      <ContentOptions />
+      <ContentOptions
+        title="Create content"
+        description="Create a new content and add seo information."
+      />
       <div className="h-[92%]">
         <ResizablePanelGroup direction="horizontal" className="mt-6">
           <ResizablePanel defaultSize={60}>
