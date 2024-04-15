@@ -11,7 +11,7 @@ import { useContent } from "@/contexts/ContentContext";
 import { Button } from "@/components/ui/button";
 
 import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
-import { FileIcon, CheckIcon } from "lucide-react";
+import { FileIcon, CheckIcon, PenLineIcon } from "lucide-react";
 
 import { componentOptions } from "@/lib/content/options";
 
@@ -35,7 +35,11 @@ export default function ContentOptions({
   return (
     <div className="flex flex-row justify-between items-center w-full mt-4">
       <div className="flex flex-row items-center">
-        <FileIcon className="w-6 h-6" />
+        {!isEditing ? (
+          <FileIcon className="w-6 h-6" />
+        ) : (
+          <PenLineIcon className="w-6 h-6" />
+        )}
         <div className="ml-4">
           <h1 className="text-lg">{title}</h1>
           <p className="text-gray-400 text-sm">{description}</p>
