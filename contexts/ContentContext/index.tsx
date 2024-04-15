@@ -11,9 +11,15 @@ import {
   useState,
 } from "react";
 
-import { auth, db, storage } from "@/lib/firebase-config";
+import { db, storage } from "@/lib/firebase-config";
 import { useRouter } from "next/navigation";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 import { collection, doc, setDoc } from "firebase/firestore";
 
 import {
@@ -132,10 +138,36 @@ export function ContentProvider({ children }: ContentContextProps) {
   );
 
   const handleRemoveComponent = useCallback(
-    (index: number) => {
-      setComponents(
-        components.filter((item, componentIndex) => componentIndex != index)
-      );
+    async (index: number) => {
+      let allComponents = [...components];
+      let selectedComponent = allComponents[index];
+
+      try {
+        if (selectedComponent.type == "image") {
+          selectedComponent.loading = true;
+          setComponents(allComponents);
+
+          const urlSplited = selectedComponent.content.split("%2F");
+          const fileName = urlSplited[2].split("?")[0];
+
+          await deleteObject(
+            ref(storage, `contents/${contentId.current}/${fileName}`)
+          );
+        }
+
+        setComponents(
+          components.filter((_, componentIndex) => componentIndex != index)
+        );
+      } catch (error) {
+        if (selectedComponent.type == "image") {
+          selectedComponent.loading = false;
+          setComponents(allComponents);
+        }
+
+        toast({
+          title: "Error deleting file, try again.",
+        });
+      }
     },
     [components]
   );
@@ -148,7 +180,7 @@ export function ContentProvider({ children }: ContentContextProps) {
         storage,
         `contents/${contentId.current}/${timestamp}.${type}`
       );
-      const fileUplaoded = await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
 
       let allComponents = [...components];
