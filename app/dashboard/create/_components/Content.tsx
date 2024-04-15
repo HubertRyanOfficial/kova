@@ -3,9 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/contexts/ContentContext";
 import { getTypeOption } from "@/lib/content/options";
-import { renderComponent } from "@/lib/content/renderComponent";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { TrashIcon } from "@radix-ui/react-icons";
+
+import RenderComponent from "./RenderComponent";
 
 import cn from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
@@ -45,9 +46,12 @@ export default function Content() {
                 </Button>
               </div>
 
-              {renderComponent(item, (value: string | File | null) =>
-                handleComponentContent(value, index)
-              )}
+              <RenderComponent
+                component={item}
+                handleFunction={(value: string | File | null) =>
+                  handleComponentContent(value, index)
+                }
+              />
             </motion.div>
           );
         })}
