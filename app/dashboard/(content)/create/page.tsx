@@ -1,6 +1,6 @@
-import Content from "./_components/Content";
+import Content from "@/components/Content/Content";
 import ContentOptions from "./_components/ContentOptions";
-import ContentInformation from "./_components/ContentInformation";
+import ContentInformation from "@/components/Content/ContentInformation";
 
 import {
   ResizableHandle,

@@ -2,7 +2,7 @@
 
 import Loader from "@/components/Loader";
 import { Input } from "@/components/ui/input";
-import { Component } from "../../../../lib/content/types";
+import { Component } from "../../lib/content/types";
 
 import cn from "classnames";
 
