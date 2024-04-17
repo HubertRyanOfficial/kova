@@ -1,19 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useContent } from "@/contexts/ContentContext";
-import { getTypeOption } from "@/lib/content/options";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import { TrashIcon } from "@radix-ui/react-icons";
-
-import RenderComponent from "./RenderComponent";
-
 import cn from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { useContent } from "@/contexts/ContentContext";
+import { TrashIcon } from "@radix-ui/react-icons";
+
+import { Button } from "@/components/ui/button";
+import RenderComponent from "./RenderComponent";
+import { getTypeOption } from "@/lib/content/options";
 
 export default function Content() {
-  const { components, handleComponentContent, handleRemoveComponent } =
-    useContent();
+  const { components, handleRemoveComponent } = useContent();
   return (
     <div className="mr-4 overflow-y">
       <AnimatePresence mode="sync">
@@ -36,22 +34,19 @@ export default function Content() {
                   {typeOption.icon}
                   <span className="-ml-2">{typeOption.title}</span>
                 </Label>
-                <Button
-                  disabled={item.loading}
-                  onClick={() => handleRemoveComponent(index)}
-                  className="ml-4 h-8"
-                  variant="outline"
-                >
-                  <TrashIcon />
-                </Button>
+                <div className="flex flex-row items-center">
+                  <Button
+                    disabled={item.loading}
+                    onClick={() => handleRemoveComponent(index)}
+                    className="ml-4 h-9"
+                    variant="outline"
+                  >
+                    <TrashIcon />
+                  </Button>
+                </div>
               </div>
 
-              <RenderComponent
-                component={item}
-                handleFunction={(value: string | File | null) =>
-                  handleComponentContent(value, index)
-                }
-              />
+              <RenderComponent index={index} component={item} />
             </motion.div>
           );
         })}

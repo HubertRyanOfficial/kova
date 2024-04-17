@@ -1,36 +1,39 @@
 "use client";
 
+import cn from "classnames";
 import Loader from "@/components/Loader";
 import { Input } from "@/components/ui/input";
-import { Component } from "../../lib/content/types";
+import { useContent } from "@/contexts/ContentContext";
 
-import cn from "classnames";
-import { createRef } from "react";
+import { Component } from "../../lib/content/types";
 
 function RenderComponent({
   component,
-  handleFunction,
+  index,
 }: {
   component: Component;
-  handleFunction: (value: string | File | null) => void;
+  index: number;
 }) {
+  const { handleComponentContent, handleTextComponentFocus } = useContent();
+
   let resultComponent = null;
 
   switch (component.type) {
     case "image":
       resultComponent = (
         <div
-          ref={component.ref}
           className="flex items-center justify-between w-full overflow-hidden"
+          onFocus={() => handleTextComponentFocus(index)}
         >
           {!component.content ? (
             <Input
+              ref={component.ref}
               type="file"
               onChange={(e) =>
                 e.target &&
                 e.target.files &&
                 e.target.files?.length >= 0 &&
-                handleFunction(e.target.files[0])
+                handleComponentContent(e.target.files[0], index)
               }
               accept="image/png, image/jpeg"
               disabled={component.loading}
@@ -51,9 +54,10 @@ function RenderComponent({
         <input
           ref={component.ref}
           value={component.content}
-          onChange={(e) => handleFunction(e.target.value)}
+          onChange={(e) => handleComponentContent(e.target.value, index)}
           placeholder="Title"
           className="w-full font-medium text-4xl border-0 outline-none pl-0 text-black placeholder:text-gray-400 bg-transparent"
+          onFocus={() => handleTextComponentFocus(index)}
         />
       );
       break;
@@ -64,8 +68,10 @@ function RenderComponent({
           className="text-base w-full h-auto bg-white border-[1px] rounded-md border-gray-200 p-4 outline-none"
           contentEditable
           onInput={(e: any) => {
-            e.target?.innerText && handleFunction(String(e.target?.innerHTML));
+            e.target?.innerText &&
+              handleComponentContent(String(e.target?.innerHTML), index);
           }}
+          onFocus={() => handleTextComponentFocus(index)}
         />
       );
 

@@ -36,6 +36,7 @@ export default function TabBar() {
       <div>
         {OPTIONS.map((option, index) => (
           <Button
+            key={index}
             onClick={() => router.push(option.path)}
             variant={option.path === location ? "outline" : "ghost"}
             className={cn("w-full flex justify-start items-center", {

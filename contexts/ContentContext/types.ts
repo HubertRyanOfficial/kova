@@ -1,4 +1,8 @@
-import type { Component, ComponentTypes } from "@/lib/content/types";
+import type {
+  Component,
+  ComponentTypes,
+  TextStyleTypes,
+} from "@/lib/content/types";
 
 export interface ContentContextProps {
   children: React.ReactNode;
@@ -10,6 +14,8 @@ export interface ContentContextType extends ContentContextHandles {
   hasComponentsAvailable: boolean;
   publishing: boolean;
   isEditing: boolean;
+  focusedComponentType: ComponentTypes | null;
+  styleSelected: string;
 }
 
 export interface ContentContextHandles {
@@ -23,6 +29,8 @@ export interface ContentContextHandles {
   handlePublish: () => Promise<void>;
   handleEditContent: (data: Content, id: string) => void;
   handleResetContentBuilder: () => void;
+  handleTextComponentFocus: (index: number | null) => void;
+  handleStyle: (style: TextStyleTypes) => void;
 }
 
 export interface ContentInformations {

@@ -11,9 +11,18 @@ import { useContent } from "@/contexts/ContentContext";
 import { Button } from "@/components/ui/button";
 
 import { FilePlusIcon, LayersIcon } from "@radix-ui/react-icons";
-import { FileIcon, CheckIcon, PenLineIcon } from "lucide-react";
+import {
+  FileIcon,
+  CheckIcon,
+  PenLineIcon,
+  Bold,
+  Italic,
+  Underline,
+} from "lucide-react";
 
 import { componentOptions } from "@/lib/content/options";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { TextStyleTypes } from "@/lib/content/types";
 
 interface ContentOptionsProps {
   title: string;
@@ -30,6 +39,9 @@ export default function ContentOptions({
     publishing,
     handlePublish,
     isEditing,
+    handleStyle,
+    focusedComponentType,
+    styleSelected,
   } = useContent();
 
   return (
@@ -46,6 +58,27 @@ export default function ContentOptions({
         </div>
       </div>
       <div className="flex flex-row items-center">
+        <ToggleGroup
+          type="single"
+          value={styleSelected}
+          onValueChange={(value: TextStyleTypes) => handleStyle(value)}
+          disabled={
+            (focusedComponentType && focusedComponentType != "text") ||
+            !focusedComponentType
+              ? true
+              : false
+          }
+        >
+          <ToggleGroupItem value="bold" aria-label="Toggle bold">
+            <Bold className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Toggle italic">
+            <Italic className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Toggle underline">
+            <Underline className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="mx-4">

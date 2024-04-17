@@ -29,7 +29,11 @@ import {
 
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "../UserContext";
-import type { Component, ComponentTypes } from "@/lib/content/types";
+import type {
+  Component,
+  ComponentTypes,
+  TextStyleTypes,
+} from "@/lib/content/types";
 
 import {
   Content,
@@ -37,6 +41,8 @@ import {
   ContentContextType,
   ContentInformations,
 } from "./types";
+
+import { formatContent } from "@/lib/content/formatContent";
 
 const ContentContext = createContext<ContentContextType>({} as any);
 
@@ -60,6 +66,10 @@ export function ContentProvider({ children }: ContentContextProps) {
     },
   ]);
   const [publishing, setPublishing] = useState(false);
+  const [focusedTextComponentIndex, setFocusedTextComponentIndex] = useState<
+    number | null
+  >(null);
+  const [styleSelected, setStyleSelected] = useState<TextStyleTypes>("");
 
   useEffect(() => {
     if (!isEditing) getNewId();
@@ -83,6 +93,21 @@ export function ContentProvider({ children }: ContentContextProps) {
 
     handleInnersValue();
   }, [isEditing, components]);
+
+  useEffect(() => {
+    if (components.length > 0) {
+      const lastComponent = components[components.length - 1];
+
+      if (
+        lastComponent &&
+        lastComponent.ref.current &&
+        lastComponent.type != "image" &&
+        !lastComponent.content
+      ) {
+        lastComponent.ref.current.focus();
+      }
+    }
+  }, [components]);
 
   const getNewId = useCallback(async () => {
     const newContentRef = collection(db, "contents");
@@ -143,7 +168,7 @@ export function ContentProvider({ children }: ContentContextProps) {
       let selectedComponent = allComponents[index];
 
       try {
-        if (selectedComponent.type == "image") {
+        if (selectedComponent.type == "image" && selectedComponent.content) {
           selectedComponent.loading = true;
           setComponents(allComponents);
 
@@ -252,25 +277,39 @@ export function ContentProvider({ children }: ContentContextProps) {
     }
   };
 
-  const handleEditContent = (data: Content, id: string) => {
-    setIsEditing(true);
+  const handleEditContent = useCallback(
+    (data: Content, id: string) => {
+      setIsEditing(true);
 
-    const allComponentes = reverseToComponents(data.full_content);
-    setComponents(allComponentes);
+      const allComponentes = reverseToComponents(data.full_content);
+      setComponents(allComponentes);
 
-    setInformations({
-      title: data.title || "",
-      description: data.description || "",
-      og_title: data.og_title || "",
-      og_description: data.og_description || "",
-      twitter_title: data.twitter_title || "",
-      twitter_description: data.twitter_description || "",
-    });
+      setInformations({
+        title: data.title || "",
+        description: data.description || "",
+        og_title: data.og_title || "",
+        og_description: data.og_description || "",
+        twitter_title: data.twitter_title || "",
+        twitter_description: data.twitter_description || "",
+      });
 
-    if (contentId.current != id) {
-      contentId.current = id;
+      if (contentId.current != id) {
+        contentId.current = id;
+      }
+    },
+    [contentId.current]
+  );
+
+  const handleTextComponentFocus = useCallback((index: number | null) => {
+    if (typeof index == "number" && index >= 0) {
+      setFocusedTextComponentIndex(index);
     }
-  };
+  }, []);
+
+  const handleStyle = useCallback(
+    (style: TextStyleTypes) => setStyleSelected(style),
+    []
+  );
 
   const hasComponentsAvailable = useMemo(
     () =>
@@ -282,6 +321,51 @@ export function ContentProvider({ children }: ContentContextProps) {
     [components, informations]
   );
 
+  const focusedComponentType = useMemo(
+    () =>
+      typeof focusedTextComponentIndex == "number" &&
+      focusedTextComponentIndex >= 0
+        ? components[focusedTextComponentIndex] &&
+          components[focusedTextComponentIndex].type
+        : null,
+    [components, focusedTextComponentIndex]
+  );
+
+  useEffect(() => {
+    const selection = window.getSelection();
+
+    if (
+      styleSelected &&
+      typeof focusedTextComponentIndex == "number" &&
+      focusedTextComponentIndex >= 0 &&
+      selection &&
+      selection.rangeCount > 0
+    ) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+
+      const focusedComponent = components[focusedTextComponentIndex];
+      const focusedComponentRef = focusedComponent.ref;
+
+      const focusedComponentContent = focusedComponent.content;
+
+      const contentFormated = formatContent(
+        focusedComponentContent,
+        selectedText,
+        styleSelected,
+        range
+      );
+
+      focusedComponentRef.current.innerHTML = contentFormated;
+
+      setStyleSelected("");
+      setComponents((prevComponent) => {
+        prevComponent[focusedTextComponentIndex].content = contentFormated;
+        return prevComponent;
+      });
+    }
+  }, [styleSelected, components]);
+
   return (
     <ContentContext.Provider
       value={{
@@ -290,6 +374,8 @@ export function ContentProvider({ children }: ContentContextProps) {
         hasComponentsAvailable,
         publishing,
         isEditing,
+        focusedComponentType,
+        styleSelected,
         handleInformations,
         handleComponentContent,
         handleAddNewComponent,
@@ -297,6 +383,8 @@ export function ContentProvider({ children }: ContentContextProps) {
         handlePublish,
         handleEditContent,
         handleResetContentBuilder,
+        handleTextComponentFocus,
+        handleStyle,
       }}
     >
       {children}

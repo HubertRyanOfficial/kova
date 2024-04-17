@@ -15,3 +15,5 @@ export interface RenderComponet {
 }
 
 export type ComponentTypes = "title" | "text" | "image";
+
+export type TextStyleTypes = "bold" | "italic" | "underline" | "";
