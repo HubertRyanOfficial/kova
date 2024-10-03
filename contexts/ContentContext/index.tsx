@@ -358,6 +358,8 @@ export function ContentProvider({ children }: ContentContextProps) {
 
       focusedComponentRef.current.innerHTML = contentFormated;
 
+      selection.removeRange(range);
+
       setStyleSelected("");
       setComponents((prevComponent) => {
         prevComponent[focusedTextComponentIndex].content = contentFormated;

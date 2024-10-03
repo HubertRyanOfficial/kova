@@ -6,7 +6,11 @@ function formatRichText(text: string) {
 }
 
 function reverseFormatRichText(text: string) {
-  return text.replace("<b>", "<b>").replace("</b>", "</h2>");
+  return text
+    .replace("<b>", `<h2>`)
+    .replace("</b>", "</h2>")
+    .replace("<p>", "")
+    .replace("</p>", "");
 }
 
 export function compilerComponent(components: Component[]) {
